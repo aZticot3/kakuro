@@ -1,0 +1,30 @@
+{
+    "height": 5,
+    "width": 4,
+    "cells": [
+      {"row": 0, "col": 0, "type": "black"},
+      {"row": 0, "col": 1, "type": "black"},
+      {"row": 0, "col": 2, "type": "clue", "downSum": 25, "rightSum": 0},
+      {"row": 0, "col": 3, "type": "clue", "downSum": 2, "rightSum": 0},
+      
+      {"row": 1, "col": 0, "type": "black"},
+      {"row": 1, "col": 1, "type": "clue", "downSum": 5, "rightSum": 8},
+      {"row": 1, "col": 2, "type": "empty"},
+      {"row": 1, "col": 3, "type": "empty"},
+      
+      {"row": 2, "col": 0, "type": "clue", "downSum": 0, "rightSum": 11},
+      {"row": 2, "col": 1, "type": "empty"},
+      {"row": 2, "col": 2, "type": "filled", "value": 8},
+      {"row": 2, "col": 3, "type": "clue", "downSum": 5, "rightSum": 0},
+      
+      {"row": 3, "col": 0, "type": "clue", "downSum": 0, "rightSum": 15},
+      {"row": 3, "col": 1, "type": "filled", "value": 2},
+      {"row": 3, "col": 2, "type": "empty"},
+      {"row": 3, "col": 3, "type": "empty"},
+      
+      {"row": 4, "col": 0, "type": "black"},
+      {"row": 4, "col": 1, "type": "clue", "downSum": 0, "rightSum": 3},
+      {"row": 4, "col": 2, "type": "empty"},
+      {"row": 4, "col": 3, "type": "empty"}
+    ]
+  }
