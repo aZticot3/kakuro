@@ -6,68 +6,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <nlohmann/json.hpp>
 
-// Pour la gestion du JSON, nous utiliserons la bibliothèque nlohmann/json
-// Mais comme elle est exclue du projet, nous allons simuler un parser JSON simple
-// Dans une implémentation réelle, il faudrait utiliser une bibliothèque JSON complète
-
-// Fonction simplifiée pour "parser" du JSON
-// (Ceci est une simulation simplifiée, une vraie bibliothèque JSON serait utilisée en pratique)
-bool parseJson(const std::string& jsonStr, Grid* grid) {
-    // Cette implémentation est très simplifiée
-    // Un vrai parser JSON serait beaucoup plus robuste
-    
-    // Format attendu (exemple simplifié):
-    // {
-    //   "height": 5,
-    //   "width": 4,
-    //   "cells": [
-    //     {"row": 0, "col": 0, "type": "black"},
-    //     {"row": 0, "col": 1, "type": "black"},
-    //     {"row": 0, "col": 2, "type": "clue", "downSum": 25, "rightSum": 0},
-    //     ...
-    //   ]
-    // }
-    
-    // Dans notre implémentation simplifiée, nous allons juste vérifier si 
-    // le fichier contient certains mots-clés et simuler le parsing
-    
-    // Vérifier si c'est du JSON valide (très basique)
-    if (jsonStr.find('{') != 0 || jsonStr.find('}') != jsonStr.length() - 1) {
-        std::cerr << "Erreur: Format JSON invalide" << std::endl;
-        return false;
-    }
-    
-    // Vérifier la présence des sections requises
-    if (jsonStr.find("\"height\"") == std::string::npos || 
-        jsonStr.find("\"width\"") == std::string::npos || 
-        jsonStr.find("\"cells\"") == std::string::npos) {
-        std::cerr << "Erreur: Sections requises manquantes dans le JSON" << std::endl;
-        return false;
-    }
-    
-    // Dans une implémentation réelle, ici on parserais le JSON
-    // et on créerait les cellules appropriées
-    // Pour l'exemple, nous allons simplement créer une grille de démonstration
-    
-    int height = grid->getHeight();
-    int width = grid->getWidth();
-    
-    // Créer quelques cellules d'exemple
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            if (i == 0 || j == 0) {
-                grid->setCell(i, j, new BlackCell(i, j));
-            } else if (i == 1 && j == 1) {
-                grid->setCell(i, j, new ClueCell(i, j, 16, 17));
-            } else {
-                grid->setCell(i, j, new EmptyCell(i, j));
-            }
-        }
-    }
-    
-    return true;
-}
+// Utilisation du namespace pour simplifier le code
+using json = nlohmann::json;
 
 Grid_Json::Grid_Json(int height, int width) : Grid(height, width) {
     // Le constructeur de Grid est appelé
@@ -84,18 +26,91 @@ bool Grid_Json::loadFromFile(const std::string& filename) {
         return false;
     }
     
-    // Lire tout le contenu du fichier
-    std::string content((std::istreambuf_iterator<char>(file)),
-                         std::istreambuf_iterator<char>());
-    
-    file.close();
-    
-    // Parser le JSON
-    return parseJson(content, this);
+    try {
+        // Parsing du JSON avec nlohmann/json
+        json jsonData;
+        file >> jsonData;
+        file.close();
+        
+        // Vérifier les dimensions
+        if (!jsonData.contains("height") || !jsonData.contains("width") || !jsonData.contains("cells")) {
+            std::cerr << "Erreur: Format JSON invalide - dimensions ou cellules manquantes" << std::endl;
+            return false;
+        }
+        
+        int fileHeight = jsonData["height"];
+        int fileWidth = jsonData["width"];
+        
+        if (fileHeight != getHeight() || fileWidth != getWidth()) {
+            std::cerr << "Erreur: Les dimensions dans le fichier (" << fileHeight << "x" << fileWidth 
+                      << ") ne correspondent pas à celles de la grille (" << getHeight() << "x" << getWidth() << ")" << std::endl;
+            return false;
+        }
+        
+        // Traitement des cellules
+        for (const auto& cell : jsonData["cells"]) {
+            if (!cell.contains("row") || !cell.contains("col") || !cell.contains("type")) {
+                std::cerr << "Erreur: Cellule mal formatée dans le JSON" << std::endl;
+                continue;
+            }
+            
+            int row = cell["row"];
+            int col = cell["col"];
+            std::string type = cell["type"];
+            
+            if (row < 0 || row >= getHeight() || col < 0 || col >= getWidth()) {
+                std::cerr << "Erreur: Indices hors limites pour la cellule: (" << row << ", " << col << ")" << std::endl;
+                continue;
+            }
+            
+            if (type == "black") {
+                setCell(row, col, new BlackCell(row, col));
+            } else if (type == "empty") {
+                setCell(row, col, new EmptyCell(row, col));
+            } else if (type == "clue") {
+                int downSum = 0;
+                int rightSum = 0;
+                
+                if (cell.contains("downSum")) {
+                    downSum = cell["downSum"];
+                }
+                
+                if (cell.contains("rightSum")) {
+                    rightSum = cell["rightSum"];
+                }
+                
+                setCell(row, col, new ClueCell(row, col, rightSum, downSum));
+            } else if (type == "filled") {
+                int value = 0;
+                
+                if (cell.contains("value")) {
+                    value = cell["value"];
+                    if (value < 1 || value > 9) {
+                        std::cerr << "Erreur: Valeur invalide pour une cellule remplie: " << value << std::endl;
+                        continue;
+                    }
+                } else {
+                    std::cerr << "Erreur: Valeur manquante pour une cellule remplie" << std::endl;
+                    continue;
+                }
+                
+                setCell(row, col, new FilledCell(row, col, value));
+            } else {
+                std::cerr << "Erreur: Type de cellule inconnu: " << type << std::endl;
+            }
+        }
+        
+        return true;
+    } catch (const json::exception& e) {
+        std::cerr << "Erreur JSON: " << e.what() << std::endl;
+        return false;
+    } catch (const std::exception& e) {
+        std::cerr << "Erreur lors du parsing: " << e.what() << std::endl;
+        return false;
+    }
 }
 
-
 bool Grid_Json::validerDonnee(int valeur) {
-    // Même implémentation que pour Grid_Default
+    // Une valeur valide est entre 1 et 9 pour le Kakuro
     return valeur >= 1 && valeur <= 9;
 }

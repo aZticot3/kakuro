@@ -10,7 +10,7 @@ public:
     virtual ~Grid_Json();
     
     // Méthodes spécifiques pour le format JSON
-    bool loadFromFile(const std::string& filename);
+    bool loadFromFile(const std::string& filename) override;
     bool validerDonnee(int valeur); // Validation pour format JSON
 };
 
