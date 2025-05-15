@@ -45,14 +45,8 @@ bool KakuroGame::loadGrid(const std::string& filename, const std::string& type) 
         return false;
     }
     
-    // Chargement des données selon le format
-    if (type == "default" || type == "Default") {
-        return dynamic_cast<Grid_Default*>(grid)->loadFromFile(filename);
-    } else if (type == "json" || type == "Json" || type == "JSON") {
-        return dynamic_cast<Grid_Json*>(grid)->loadFromFile(filename);
-    }
-    
-    return false;
+    // Using virtual method instead of dynamic_cast
+    return grid->loadFromFile(filename);
 }
 
 // Méthode pour résoudre la grille automatiquement
