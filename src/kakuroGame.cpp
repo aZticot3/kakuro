@@ -420,11 +420,6 @@ bool KakuroGame::playManually() {
                                 if (sec) correctVal = sec->getValue();
                                 else if (sfc) correctVal = sfc->getValue();
                                 
-                                if (val == correctVal) {
-                                    std::cout << COLOR_GREEN << "Correct!" << COLOR_RESET << std::endl;
-                                } else {
-                                    std::cout << COLOR_RED << "Hmm..." << COLOR_RESET << std::endl;
-                                }
                                 
                                 // Vérifier si complet
                                 bool complete = true;
