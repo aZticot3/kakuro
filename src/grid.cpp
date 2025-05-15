@@ -85,9 +85,15 @@ void Grid::displayWithValidation(const Grid& solutionGrid) const {
                     
                     // Vérifier si la valeur est correcte
                     bool isCorrect = (emptyCell->getValue() == solutionValue);
-                    std::cout << std::setw(4) << emptyCell->displayColored(isCorrect);
+                    
+                    // Afficher directement les codes de couleur sans passer par std::setw
+                    if (isCorrect) {
+                        std::cout << "   " << COLOR_GREEN << emptyCell->getValue() << COLOR_RESET;
+                    } else {
+                        std::cout << "   " << COLOR_RED << emptyCell->getValue() << COLOR_RESET;
+                    }
                 } else {
-                    // Cell normale, affichage standard
+                    // Cell normale, affichage standard avec setw
                     std::cout << std::setw(4) << cells[i][j]->display();
                 }
             } else {
