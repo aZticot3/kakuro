@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <algorithm>
 #include <limits>
+#include <nlohmann/json.hpp>
 
 // Constructeur
 KakuroGame::KakuroGame() : grid(nullptr), isSolved(false) {
@@ -29,7 +30,32 @@ bool KakuroGame::loadGrid(const std::string& filename, const std::string& type) 
     }
     
     int height, width;
-    file >> height >> width;
+    
+    // Pour JSON, nous devons parser le fichier différemment
+    if (type == "json" || type == "Json" || type == "JSON") {
+        try {
+            // Utilisation de nlohmann/json pour lire les dimensions
+            nlohmann::json jsonData;
+            file >> jsonData;
+            
+            if (!jsonData.contains("height") || !jsonData.contains("width")) {
+                std::cerr << "Erreur: Dimensions manquantes dans le fichier JSON" << std::endl;
+                file.close();
+                return false;
+            }
+            
+            height = jsonData["height"];
+            width = jsonData["width"];
+        } catch (const std::exception& e) {
+            std::cerr << "Erreur lors du parsing JSON: " << e.what() << std::endl;
+            file.close();
+            return false;
+        }
+    } else {
+        // Format texte standard
+        file >> height >> width;
+    }
+    
     file.close();
     
     // Libération de la grille précédente si elle existe
@@ -45,7 +71,7 @@ bool KakuroGame::loadGrid(const std::string& filename, const std::string& type) 
         return false;
     }
     
-    // Using virtual method instead of dynamic_cast
+    // Utilisation du polymorphisme pour charger le fichier avec la méthode appropriée
     return grid->loadFromFile(filename);
 }
 

@@ -10,7 +10,7 @@ public:
     virtual ~Grid_Default();
     
     // Méthodes spécifiques pour le format par défaut
-    bool loadFromFile(const std::string& filename);
+    bool loadFromFile(const std::string& filename) override;
 
     bool validerDonnee(int valeur); // Validation pour format par défaut
 };

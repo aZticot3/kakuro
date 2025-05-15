@@ -9,11 +9,11 @@ class Grid {
 private:
     int height;
     int width;
-    std::vector<std::vector<Cell*>> cells;  
+    std::vector<std::vector<Cell*>> cells;  // Notez que c'est un vector de pointeurs Cell*
 
 public:
     Grid(int height, int width);
-    virtual ~Grid(); 
+    virtual ~Grid();
     
     int getHeight() const;
     int getWidth() const;
@@ -21,7 +21,7 @@ public:
     void setCell(int row, int col, Cell* cell);
     void display() const;
     
-    // Add a virtual method for loading files
+    // Méthode virtuelle pour charger une grille depuis un fichier
     virtual bool loadFromFile(const std::string& filename) = 0;
 };
 
