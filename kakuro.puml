@@ -72,13 +72,11 @@ package "Kakuro Solver" {
     
     class Grid_Default {
       + Grid_Default(hauteur: int, largeur: int)
-      + saisirDonnee(ligne: int, colonne: int, valeur: Object): void
       + validerDonnee(valeur: Object): boolean
     }
 
     class Grid_Json {
       + Grid_Json(hauteur: int, largeur: int)
-      + saisirDonnee(ligne: int, colonne: int, valeur: Object): void
       + validerDonnee(valeur: Object): boolean
     }
     
