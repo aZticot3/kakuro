@@ -221,15 +221,68 @@ void KakuroGame::displayGridFiles() const {
 // Traitement des commandes utilisateur
 bool KakuroGame::processCommand(const std::string& command) {
     if (command == "1") {
-        // ... code existant pour charger une grille ...
+        // Charger une grille
+        if (gridFiles.empty()) {
+            std::cout << "Aucun fichier de grille trouvé dans le répertoire 'grilles'." << std::endl;
+            return true;
+        }
+        
+        displayGridFiles();
+        
+        std::cout << "Sélectionnez un fichier (1-" << gridFiles.size() << "): ";
+        std::string fileChoice;
+        std::getline(std::cin, fileChoice);
+        
+        try {
+            int choice = std::stoi(fileChoice);
+            if (choice >= 1 && choice <= static_cast<int>(gridFiles.size())) {
+                std::string filename = "grilles/" + gridFiles[choice - 1];
+                
+                // Déterminer le type de fichier
+                std::string type;
+                if (filename.substr(filename.length() - 5) == ".json") {
+                    type = "json";
+                } else {
+                    type = "default";
+                }
+                
+                if (loadGrid(filename, type)) {
+                    std::cout << "Grille chargée avec succès!" << std::endl;
+                    display();
+                } else {
+                    std::cout << "Échec du chargement de la grille." << std::endl;
+                }
+            } else {
+                std::cout << "Choix invalide." << std::endl;
+            }
+        } catch (const std::invalid_argument&) {
+            std::cout << "Entrée invalide. Veuillez entrer un nombre." << std::endl;
+        }
     } else if (command == "2") {
-        // ... code existant pour afficher la grille ...
+        // Afficher la grille actuelle
+        display();
     } else if (command == "3") {
-        // ... code existant pour jouer manuellement ...
+        // Jouer manuellement
+        if (grid == nullptr) {
+            std::cout << "Vous devez d'abord charger une grille." << std::endl;
+            return true;
+        }
+        
+        bool gameCompleted = playManually();
+        if (gameCompleted) {
+            std::cout << "Félicitations! Vous avez résolu la grille!" << std::endl;
+        }
     } else if (command == "4") {
-        // ... code existant pour résoudre automatiquement ...
+        // Résoudre automatiquement
+        if (grid == nullptr) {
+            std::cout << "Vous devez d'abord charger une grille." << std::endl;
+            return true;
+        }
+        
+        solve();
+        display();
     } else if (command == "5") {
-        // Nouvelle option: Vérifier la grille
+        // Vérifier la grille
         if (grid == nullptr) {
             std::cout << "Vous devez d'abord charger une grille." << std::endl;
             return true;
@@ -237,7 +290,7 @@ bool KakuroGame::processCommand(const std::string& command) {
         
         checkPlayerGrid();
     } else if (command == "6") {
-        // Quitter (anciennement option 5)
+        // Quitter
         return false;
     } else {
         std::cout << "Commande non reconnue. Veuillez réessayer." << std::endl;
