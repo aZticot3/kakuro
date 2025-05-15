@@ -1,0 +1,114 @@
+@startuml
+
+package "Kakuro Solver" {
+    class KakuroGame {
+        - grid: Grid
+        + loadGrid(gridLoader: GridLoader): bool
+        + solve(): bool
+        + display(): void
+    }
+
+    abstract class Cell {
+        # row: int
+        # col: int
+        + getRow(): int
+        + getCol(): int
+        + {abstract} display(): string
+    }
+
+    class EmptyCell {
+        - value: int
+        - possibleValues: set<int>
+        + setValue(value: int): void
+        + getValue(): int
+        + getPossibleValues(): set<int>
+        + removePossibleValue(value: int): void
+        + clearPossibleValues(): void
+        + display(): string override
+    }
+
+    class FilledCell {
+        - value: int
+        + getValue(): int
+        + display(): string override
+    }
+
+    class ClueCell {
+        - rightSum: int
+        - downSum: int
+        + getRightSum(): int
+        + getDownSum(): int
+        + display(): string override
+    }
+
+    class BlackCell {
+        + display(): string override
+    }
+
+    abstract class Grid {
+        - height: int
+        - width: int
+        - cells: vector<vector<Cell*>>
+        + getHeight(): int
+        + getWidth(): int
+        + getCell(row: int, col: int): Cell*
+        + setCell(row: int, col: int, cell: Cell*): void
+        + display(): void
+    }
+
+    class KakuroSolver {
+        - grid: Grid*
+        + solve(): bool
+        - backtrack(): bool
+        - isSumValid(clue: ClueCell): bool
+    }
+
+    class CommandLineInterface {
+        - game: KakuroGame
+        + run(): void
+        - displayMenu(): void
+        - processCommand(command: string): void
+    }
+    
+    class Grid_Default {
+      + Grid_Default(hauteur: int, largeur: int)
+      + saisirDonnee(ligne: int, colonne: int, valeur: Object): void
+      + validerDonnee(valeur: Object): boolean
+    }
+
+    class Grid_Json {
+      + Grid_Json(hauteur: int, largeur: int)
+      + saisirDonnee(ligne: int, colonne: int, valeur: Object): void
+      + validerDonnee(valeur: Object): boolean
+    }
+    
+    class GridFactory {
+      + {static} creerGrid(type: String, hauteur: int, largeur: int): Grid
+    }
+
+    KakuroGame --> KakuroSolver
+    Grid "1" *-- "0..*" Cell
+    
+    Cell <|-- EmptyCell
+    Cell <|-- FilledCell
+    Cell <|-- ClueCell
+    Cell <|-- BlackCell
+    
+    KakuroSolver --> Grid
+    
+    Grid <|-- Grid_Default
+    Grid <|-- Grid_Json
+    
+    GridFactory ..> Grid_Default: crée
+    GridFactory ..> Grid_Json: crée
+    GridFactory ..> Grid: use
+    
+    KakuroGame ..> GridFactory: utilise
+    KakuroGame ..> Grid: manipule
+
+    
+    
+    CommandLineInterface --> KakuroGame
+}
+
+@enduml
