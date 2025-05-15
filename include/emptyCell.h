@@ -25,6 +25,8 @@ public:
     
     // Implémentation de la méthode abstraite de la classe Cell
     std::string display() const override;
+
+    std::string displayColored(bool isCorrect) const override;
 };
 
 #endif // EMPTY_CELL_H

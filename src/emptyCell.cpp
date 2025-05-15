@@ -55,3 +55,15 @@ std::string EmptyCell::display() const {
         return "_";
     }
 }
+
+std::string EmptyCell::displayColored(bool isCorrect) const {
+    if (value > 0) {
+        if (isCorrect) {
+            return COLOR_GREEN + std::to_string(value) + COLOR_RESET;
+        } else {
+            return COLOR_RED + std::to_string(value) + COLOR_RESET;
+        }
+    } else {
+        return "_"; // Cellule non remplie
+    }
+}

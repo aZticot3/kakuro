@@ -9,6 +9,7 @@
 class KakuroGame {
 private:
     Grid* grid;
+    Grid* solutionGrid;  // Nouvelle grille pour stocker la solution correcte
     bool isSolved;
     std::vector<std::string> gridFiles;
     
@@ -18,6 +19,9 @@ private:
     bool processCommand(const std::string& command);
     void scanGridFiles(const std::string& directory);
     bool playManually();
+    
+    // Nouvelle méthode pour vérifier la grille du joueur
+    void checkPlayerGrid() const;
     
 public:
     KakuroGame();
