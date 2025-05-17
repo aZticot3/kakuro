@@ -1,7 +1,7 @@
 #include "../include/grid_factory.h"
-#include "../include/GridCreator.h"
-#include "../include/DefaultGridCreator.h"
-#include "../include/JsonGridCreator.h"
+#include "../include/gridCreator.h"
+#include "../include/defaultGridCreator.h"
+#include "../include/jsonGridCreator.h"
 #include "../include/grid.h"
 
 // Initialisation des membres statiques
