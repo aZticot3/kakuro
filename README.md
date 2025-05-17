@@ -93,7 +93,7 @@ Les nouvelles grilles seront automatiquement détectées au lancement du jeu.
   "cells": [
     {"row": 0, "col": 0, "type": "black"},
     {"row": 0, "col": 2, "type": "clue", "downSum": 25, "rightSum": 0},
-    "..."
+    // etc ..
   ]
 }
 ```
