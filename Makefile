@@ -13,6 +13,10 @@ SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS = $(patsubst $(OBJ_DIR)/%.o,$(OBJ_DIR)/%.d,$(OBJS))
 
+# Ajouter main.cpp aux objets
+MAIN_OBJ = $(OBJ_DIR)/main.o
+MAIN_DEP = $(OBJ_DIR)/main.d
+
 # Nom de l'exécutable
 TARGET = $(BIN_DIR)/kakuro
 
@@ -35,11 +39,15 @@ directories:
 	@mkdir -p $(BIN_DIR)
 
 # Règle de création de l'exécutable
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) $(MAIN_OBJ)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 # Règle de compilation des fichiers source
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $(JSON_LIB) -MMD -MP -c $< -o $@
+
+# Règle spéciale pour main.cpp
+$(MAIN_OBJ): main.cpp
 	$(CXX) $(CXXFLAGS) $(JSON_LIB) -MMD -MP -c $< -o $@
 
 # Règle de clean
@@ -50,7 +58,7 @@ clean:
 rebuild: clean all
 
 # Inclusion des fichiers de dépendances
--include $(DEPS)
+-include $(DEPS) $(MAIN_DEP)
 
 # Indique que 'all', 'clean', etc. sont des noms de règles et non des fichiers
 .PHONY: all clean rebuild directories
