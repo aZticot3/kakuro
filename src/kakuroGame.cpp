@@ -417,12 +417,13 @@ bool KakuroGame::playManually() {
                                 
                                 // Feedback immédiat
                                 Cell* sc = solutionGrid->getCell(row, col);
+                                int correctVal = 0;
                                 EmptyCell* sec = dynamic_cast<EmptyCell*>(sc);
                                 FilledCell* sfc = dynamic_cast<FilledCell*>(sc);
                                 
                                 if (sec) correctVal = sec->getValue();
                                 else if (sfc) correctVal = sfc->getValue();
-                                
+                                else correctVal = -1;
                                 
                                 // Vérifier si complet
                                 bool complete = true;
