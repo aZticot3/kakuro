@@ -414,10 +414,7 @@ bool KakuroGame::playManually() {
                             int val = std::stoi(valOrCmd);
                             if (val >= 1 && val <= 9) {
                                 ec->setValue(val);
-                                
-                                // Feedback immédiat
-                                Cell* sc = solutionGrid->getCell(row, col);
-                                
+                                                        
                                 // Vérifier si complet
                                 bool complete = true;
                                 bool allCorrect = true;
