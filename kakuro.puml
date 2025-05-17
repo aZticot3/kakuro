@@ -1,11 +1,27 @@
 @startuml
 
+skinparam class {
+  BackgroundColor white
+  ArrowColor black
+  BorderColor black
+}
+
 package "Kakuro Solver" {
     class KakuroGame {
-        - grid: Grid
-        + loadGrid(gridLoader: GridLoader): bool
+        - grid: Grid*
+        - solutionGrid: Grid*
+        - isSolved: bool
+        - gridFiles: vector<string>
+        + loadGrid(filename: string, type: string): bool
         + solve(): bool
         + display(): void
+        + run(): void
+        - displayMenu(): void
+        - displayGridFiles(): void
+        - processCommand(command: string): bool
+        - scanGridFiles(directory: string): void
+        - playManually(): bool
+        - checkPlayerGrid(): void
     }
 
     abstract class Cell {
@@ -14,6 +30,7 @@ package "Kakuro Solver" {
         + getRow(): int
         + getCol(): int
         + {abstract} display(): string
+        + displayColored(isCorrect: bool): string
     }
 
     class EmptyCell {
@@ -25,6 +42,7 @@ package "Kakuro Solver" {
         + removePossibleValue(value: int): void
         + clearPossibleValues(): void
         + display(): string override
+        + displayColored(isCorrect: bool): string override
     }
 
     class FilledCell {
@@ -46,67 +64,95 @@ package "Kakuro Solver" {
     }
 
     abstract class Grid {
-        - height: int
-        - width: int
-        - cells: vector<vector<Cell*>>
+        # height: int
+        # width: int
+        # cells: vector<vector<Cell*>>
         + getHeight(): int
         + getWidth(): int
         + getCell(row: int, col: int): Cell*
         + setCell(row: int, col: int, cell: Cell*): void
         + display(): void
+        + displayWithValidation(solutionGrid: Grid): void
+        + {abstract} loadFromFile(filename: string): bool
     }
 
     class KakuroSolver {
         - grid: Grid*
         + solve(): bool
         - backtrack(): bool
-        - isSumValid(clue: ClueCell): bool
+        - isSumValid(clue: ClueCell*): bool
+        - isValueValid(row: int, col: int, value: int): bool
+        - getEmptyCells(): vector<pair<int,int>>
     }
 
-    class CommandLineInterface {
-        - game: KakuroGame
-        + run(): void
-        - displayMenu(): void
-        - processCommand(command: string): void
-    }
+    ' Factory Method Pattern Implementation
     
+    interface GridCreator {
+        + {abstract} createGrid(height: int, width: int): Grid*
+        + {abstract} canHandleType(type: string): bool
+    }
+
+    class DefaultGridCreator {
+        + createGrid(height: int, width: int): Grid* override
+        + canHandleType(type: string): bool override
+    }
+
+    class JsonGridCreator {
+        + createGrid(height: int, width: int): Grid* override
+        + canHandleType(type: string): bool override
+    }
+
+    class GridFactory {
+        - {static} creators: vector<unique_ptr<GridCreator>>
+        - {static} isInitialized: bool
+        + {static} registerCreator(creator: unique_ptr<GridCreator>): void
+        + {static} creerGrid(type: string, hauteur: int, largeur: int): Grid*
+        + {static} creerGrid(type: GridType, hauteur: int, largeur: int): Grid*
+        + {static} initialize(): void
+    }
+
+    enum GridType {
+        DEFAULT
+        JSON
+    }
+
     class Grid_Default {
-      + Grid_Default(hauteur: int, largeur: int)
-      + validerDonnee(valeur: Object): boolean
+        + loadFromFile(filename: string): bool override
+        + validerDonnee(valeur: int): bool
     }
 
     class Grid_Json {
-      + Grid_Json(hauteur: int, largeur: int)
-      + validerDonnee(valeur: Object): boolean
-    }
-    
-    class GridFactory {
-      + {static} creerGrid(type: String, hauteur: int, largeur: int): Grid
+        + loadFromFile(filename: string): bool override
+        + validerDonnee(valeur: int): bool
     }
 
-    KakuroGame --> KakuroSolver
-    Grid "1" *-- "0..*" Cell
+    ' Relationships
+    KakuroGame --> KakuroSolver: uses
+    KakuroGame *-- Grid: possède
+    KakuroGame ..> GridFactory: uses
+    
+    Grid <|-- Grid_Default
+    Grid <|-- Grid_Json
+    Grid "1" *-- "1..*" Cell: contient
     
     Cell <|-- EmptyCell
     Cell <|-- FilledCell
     Cell <|-- ClueCell
     Cell <|-- BlackCell
     
-    KakuroSolver --> Grid
+    KakuroSolver --> Grid: manipule
     
-    Grid <|-- Grid_Default
-    Grid <|-- Grid_Json
-    
+    ' Factory Method Pattern Relationships
+    GridFactory ..> GridCreator: uses
+    GridFactory o-- GridType: possède
     GridFactory ..> Grid_Default: crée
     GridFactory ..> Grid_Json: crée
-    GridFactory ..> Grid: use
     
-    KakuroGame ..> GridFactory: utilise
-    KakuroGame ..> Grid: manipule
-
+    GridCreator <|.. DefaultGridCreator
+    GridCreator <|.. JsonGridCreator
     
-    
-    CommandLineInterface --> KakuroGame
+    DefaultGridCreator ..> Grid_Default: crée
+    JsonGridCreator ..> Grid_Json: crée
 }
 
 @enduml
