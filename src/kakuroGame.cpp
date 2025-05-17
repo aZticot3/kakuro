@@ -417,8 +417,6 @@ bool KakuroGame::playManually() {
                                 
                                 // Feedback immédiat
                                 Cell* sc = solutionGrid->getCell(row, col);
-                                EmptyCell* sec = dynamic_cast<EmptyCell*>(sc);
-                                FilledCell* sfc = dynamic_cast<FilledCell*>(sc);
                                 
                                 // Vérifier si complet
                                 bool complete = true;
