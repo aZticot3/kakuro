@@ -67,7 +67,6 @@ void Grid::displayWithValidation(const Grid& solutionGrid) const {
                 // Vérifier si c'est une EmptyCell ou FilledCell (qui contiennent une valeur)
                 EmptyCell* emptyCell = dynamic_cast<EmptyCell*>(cells[i][j]);
                 FilledCell* filledCell = dynamic_cast<FilledCell*>(cells[i][j]);
-                
                 if (emptyCell && emptyCell->getValue() > 0) {
                     // C'est une cellule que le joueur a remplie
                     Cell* solutionCell = solutionGrid.getCell(i, j);
