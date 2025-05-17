@@ -246,6 +246,8 @@ bool KakuroGame::processCommand(const std::string& command) {
                 std::string type;
                 if (filename.substr(filename.length() - 5) == ".json") {
                     type = "json";
+                } else if (filename.substr(filename.length() - 7) == ".kakuro") {
+                    type = "default";
                 } else {
                     type = "default";
                 }
@@ -311,9 +313,10 @@ void KakuroGame::scanGridFiles(const std::string& directory) {
         for (const auto& entry : std::filesystem::directory_iterator(directory)) {
             if (entry.is_regular_file()) {
                 std::string filename = entry.path().filename().string();
-                // Filtrer pour ne garder que les fichiers .txt et .json
+                // Filtrer pour ne garder que les fichiers .txt, .json et .kakuro
                 if (filename.substr(filename.length() - 4) == ".txt" || 
-                    filename.substr(filename.length() - 5) == ".json") {
+                    filename.substr(filename.length() - 5) == ".json" ||
+                    filename.substr(filename.length() - 7) == ".kakuro") {
                     gridFiles.push_back(filename);
                 }
             }
