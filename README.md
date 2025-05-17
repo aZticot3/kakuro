@@ -58,9 +58,9 @@ Par exemple, pour entrer le chiffre 5 à la ligne 2, colonne 3 :
 ```
 
 Autres commandes en mode jeu manuel :
-- `ligne colonne c` - Efface la valeur de la case
+- `ligne colonne c` - Ecrase la valeur de la case
 - `v` - Vérifie votre solution actuelle
-- `h` - Demande un indice
+- `h` - Demande un indice : donne 1 chiffre bien placé
 - `q` - Quitte le mode jeu manuel
 
 ## Ajouter de nouvelles grilles
@@ -93,7 +93,7 @@ Les nouvelles grilles seront automatiquement détectées au lancement du jeu.
   "cells": [
     {"row": 0, "col": 0, "type": "black"},
     {"row": 0, "col": 2, "type": "clue", "downSum": 25, "rightSum": 0},
-    ...
+    //...
   ]
 }
 ```
