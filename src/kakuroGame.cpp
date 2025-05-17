@@ -1,6 +1,9 @@
 #include "../include/kakuroGame.h"
+#include "../include/grid.h"
+#include "../include/grid_factory.h"
 #include "../include/kakuroSolver.h"
 #include "../include/emptyCell.h"
+#include "../include/filledCell.h"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -12,6 +15,7 @@
 // Constructeur
 KakuroGame::KakuroGame() : grid(nullptr), solutionGrid(nullptr), isSolved(false) {
     // Scan des fichiers de grilles disponibles au démarrage
+    GridFactory::initialize();
     scanGridFiles("grilles");
 }
 

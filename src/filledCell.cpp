@@ -1,5 +1,4 @@
 #include "../include/filledCell.h"
-#include <string>
 
 // Constructeur
 FilledCell::FilledCell(int row, int col, int value) : Cell(row, col), value(value) {

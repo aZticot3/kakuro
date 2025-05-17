@@ -5,7 +5,6 @@
 #include "../include/filledCell.h"
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <nlohmann/json.hpp>
 
 // Utilisation du namespace pour simplifier le code

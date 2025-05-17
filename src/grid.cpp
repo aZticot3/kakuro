@@ -1,6 +1,10 @@
 #include "../include/grid.h"
+#include "../include/cell.h"
+#include "../include/emptyCell.h"
+#include "../include/filledCell.h"
 #include <iostream>
 #include <iomanip>
+
 
 // Constructeur corrigé
 Grid::Grid(int height, int width) : height(height), width(width) {

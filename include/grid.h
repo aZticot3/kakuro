@@ -2,10 +2,9 @@
 #define GRID_H
 
 #include <vector>
-#include "cell.h"
-#include "../include/emptyCell.h"
-#include "../include/filledCell.h"
 #include <string>
+
+class Cell;
 
 class Grid {
 private:

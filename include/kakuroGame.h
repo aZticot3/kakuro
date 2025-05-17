@@ -1,10 +1,10 @@
 #ifndef KAKURO_GAME_H
 #define KAKURO_GAME_H
 
-#include "grid.h"
-#include "grid_factory.h"
 #include <string>
 #include <vector>
+
+class Grid;
 
 class KakuroGame {
 private:

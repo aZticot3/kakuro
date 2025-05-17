@@ -1,6 +1,4 @@
 #include "../include/emptyCell.h"
-#include <string>
-#include <algorithm>
 
 // Constructeur
 EmptyCell::EmptyCell(int row, int col) 

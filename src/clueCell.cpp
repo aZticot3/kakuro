@@ -1,5 +1,4 @@
 #include "../include/clueCell.h"
-#include <string>
 #include <sstream>
 
 // Constructeur

@@ -1,24 +1,33 @@
 #ifndef GRID_FACTORY_H
 #define GRID_FACTORY_H
 
-#include "grid.h"
-#include "grid_default.h"
-#include "grid_json.h"
 #include <string>
+#include <vector>
+#include <memory>
+
+class Grid;
+class GridCreator;
 
 class GridFactory {
 public:
-    // Énumération des types de grilles disponibles
     enum class GridType {
         DEFAULT,
         JSON
     };
     
-    // Méthode statique pour créer une grille du type demandé
-    static Grid* creerGrid(const std::string& type, int hauteur, int largeur);
+    // Méthodes pour enregistrer des créateurs de grilles
+    static void registerCreator(std::unique_ptr<GridCreator> creator);
     
-    // Surcharge de la méthode avec l'énumération
+    // Méthodes de création qui utilisent les créateurs enregistrés
+    static Grid* creerGrid(const std::string& type, int hauteur, int largeur);
     static Grid* creerGrid(GridType type, int hauteur, int largeur);
+    
+    // Initialisation des créateurs par défaut
+    static void initialize();
+
+private:
+    static std::vector<std::unique_ptr<GridCreator>> creators;
+    static bool isInitialized;
 };
 
 #endif // GRID_FACTORY_H

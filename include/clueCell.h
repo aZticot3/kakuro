@@ -3,7 +3,6 @@
 
 #include "cell.h"
 #include <string>
-#include <vector>
 
 class ClueCell : public Cell {
 private:

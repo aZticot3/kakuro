@@ -1,5 +1,4 @@
 #include "../include/blackCell.h"
-#include <string>
 
 // Constructeur
 BlackCell::BlackCell(int row, int col) : Cell(row, col) {
